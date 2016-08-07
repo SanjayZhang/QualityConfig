@@ -1,0 +1,42 @@
+apply plugin: 'checkstyle'
+apply plugin: 'findbugs'
+apply plugin: 'pmd'
+apply plugin: 'java'
+
+
+def qualityConfigDir = "$project.rootDir/quality/config";
+// to speed up Instant Run
+//preBuild.dependsOn 'checkstyle'
+
+checkstyle {
+    ignoreFailures = true
+    configFile file("${qualityConfigDir}/checkstyle/checkstyle.xml")
+}
+
+
+findbugs {
+    ignoreFailures = true
+    findbugsTest.enabled = false
+}
+
+tasks.withType(FindBugs) {
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+}
+
+
+pmd {
+    ignoreFailures = true
+    pmdTest.enabled = false
+    ruleSetFiles = files("${qualityConfigDir}/pmd/pmd-ruleset.xml")
+    ruleSets = []
+}
+
+tasks.withType(Pmd) {
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+}
